@@ -1,24 +1,26 @@
 package com.june.onetapsms
 
 import android.Manifest
-import android.R.attr
 import android.app.PendingIntent
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.telephony.SmsManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.hover.sdk.api.Hover
-import com.hover.sdk.api.HoverParameters
+import com.june.onetapsms.accessibility.Codes
 import com.june.onetapsms.databinding.DialogPersonalInformationBinding
 import com.june.onetapsms.databinding.DialogReminderBinding
 import pub.devrel.easypermissions.AfterPermissionGranted
@@ -26,25 +28,11 @@ import pub.devrel.easypermissions.EasyPermissions
 
 
 // RECIPIENT NUMBER
-const val SMART_RECIPIENT = "09434398427"
+const val SMART_RECIPIENT = "09213244493"
 const val GLOBE_RECIPIENT = "09456079023"
 
 class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks,
     EasyPermissions.RationaleCallbacks {
-
-    // USSD CODE
-    private val smart = "*143*5*4*1${Uri.encode("#")}"
-    private val tnt = "*143*5*4*1*1${Uri.encode("#")}"
-    private val globe = "*143*8*2*1*1${Uri.encode("#")}"
-    private val tm = "*143*11*1*9*1${Uri.encode("#")}"
-
-    private fun ussd() =
-        when (SharedPrefManager.network) {
-            0 -> smart
-            1 -> tnt
-            2 -> globe
-            else -> tm
-        }
 
     private fun recipient() =
         if (SharedPrefManager.network == 0 ||
@@ -62,7 +50,6 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Hover.initialize(this)
         setupPermissions()
         setupInformation()
 
@@ -156,12 +143,12 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks,
     @AfterPermissionGranted(RC_CALL)
     private fun makeUSSDCall() {
         if (hasCallAndSmsPermissions()) {
-            val i = HoverParameters.Builder(this)
-                .request("3a3e21aa")
-                .buildIntent()
-            startActivityForResult(i, 0)
-
-
+            Codes.index = 0
+            val ussd = "*143${Uri.encode("#")}"
+            startActivity(Intent(Intent.ACTION_CALL, Uri.parse("tel: $ussd")))
+            Handler(Looper.getMainLooper()).postDelayed({
+                sendSms()
+            }, SMS_DELAY)
         } else EasyPermissions.requestPermissions(
             this,
             getString(R.string.rationale_call_sms),
@@ -205,15 +192,6 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d(TAG, "onActivityResult: requestCode=$requestCode, resultCode=$resultCode, data=$data")
-
-        if (requestCode == 0 && resultCode == RESULT_OK) {
-            val sessionTextArr = data?.getStringArrayExtra("session_messages")
-            val uuid = data?.getStringExtra("uuid")
-        } else if (requestCode == 0 && resultCode == RESULT_CANCELED) {
-            Toast.makeText(this, "Error: " + data?.getStringExtra("error"), Toast.LENGTH_LONG)
-                .show()
-        }
-
     }
 
     override fun onRequestPermissionsResult(
@@ -283,7 +261,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks,
         const val RC_SMS = 102
         const val SMS_SENT = "SMS_SENT"
         const val SMS_DELIVERED = "SMS_DELIVERED"
-
+        const val SMS_DELAY = 60L * 1000L
 
         private val CALL_SMS_PERMISSIONS =
             arrayOf(Manifest.permission.CALL_PHONE, Manifest.permission.SEND_SMS)
