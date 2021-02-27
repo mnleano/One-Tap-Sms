@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">One Tap SMS</string>
+    <string name="rationale_call">This app needs your permission to make a phone call</string>
+    <string name="rationale_sms">This app needs your permission to send sms</string>
+    <string name="name">Name</string>
+    <string name="confirmation_number">Confirmation Number</string>
+    <string name="ra_number">RA Number</string>
+    <string name="submit">Submit</string>
+    <string name="smart">Smart</string>
+    <string name="tnt">Talk N Text</string>
+    <string name="globe">Globe</string>
+    <string name="tm">Touch Mobile</string>
+    <string name="reminder">Please not that every click of the button is considered to be one count booking</string>
+    <string name="edit_information">Edit Information</string>
+    <string name="reminders">Reminders</string>
+    <string name="rationale_call_sms">This apps needs your permission to make a phone call and send sms.</string>
+</resources>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/windowBackground"
+        tools:context=".MainActivity">
+
+        <!--
+            To change icon
+            1. Go to res > drawable folder put your new image asset. file name should not have space underline for it
+            2. Make sure it is in PNG format. So you want have problem with transparency or white background
+            3. below look for android:src (or line 26) change value after @drawable/ to the file name of your new image
+         -->
+        <ImageView
+            android:id="@+id/btnSend"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:background="@drawable/background_circle"
+            android:onClick="onSendMessageClick"
+            android:padding="48dp"
+            android:src="@drawable/img_shut_down"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
