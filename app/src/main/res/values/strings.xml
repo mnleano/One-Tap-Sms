@@ -15,4 +15,5 @@
     <string name="reminders">Reminders</string>
     <string name="rationale_call_sms">This apps needs your permission to make a phone call and send sms.</string>
     <string name="accessibility_service_description">One Tap SMS Accessibility Service</string>
+    <string name="sales_recorded">Sales Recorded</string>
 </resources>

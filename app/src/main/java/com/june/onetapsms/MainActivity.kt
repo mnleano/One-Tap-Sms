@@ -22,6 +22,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.june.onetapsms.accessibility.Codes
 import com.june.onetapsms.databinding.DialogPersonalInformationBinding
+import com.june.onetapsms.databinding.DialogRecordedBinding
 import com.june.onetapsms.databinding.DialogReminderBinding
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -243,10 +244,16 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks,
             when (resultCode) {
                 RESULT_OK -> {
                     Log.d(TAG, "$SMS_DELIVERED RESULT_OK")
-                    AlertDialog.Builder(this@MainActivity)
-                        .setTitle(getString(R.string.app_name))
-                        .setMessage("Sales Recorded")
-                        .setPositiveButton("Ok") { dialog, _ -> dialog.dismiss() }.show()
+                    val dialogBinding = DialogRecordedBinding.inflate(LayoutInflater.from(this@MainActivity))
+
+                    val dialog = AlertDialog.Builder(this@MainActivity)
+                        .setView(dialogBinding.root)
+                        .create()
+
+                    dialogBinding.ok.setOnClickListener { dialog.dismiss() }
+                    dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    dialog.window?.setDimAmount(0f)
+                    dialog.show()
                 }
                 RESULT_CANCELED -> Log.d(TAG, "$SMS_DELIVERED RESULT_CANCELED")
                 else -> Log.w(TAG, "$SMS_DELIVERED unhandled result=$resultCode")
