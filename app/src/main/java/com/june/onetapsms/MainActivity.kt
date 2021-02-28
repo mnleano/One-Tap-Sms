@@ -18,6 +18,7 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.june.onetapsms.accessibility.Codes
@@ -223,7 +224,21 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks,
     private val smsSentReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (resultCode) {
-                RESULT_OK -> Log.d(TAG, "$SMS_SENT RESULT_OK")
+                RESULT_OK -> {
+                    Log.d(TAG, "$SMS_SENT RESULT_OK")
+                    Toast.makeText(this@MainActivity, "Sales Recorded", Toast.LENGTH_SHORT).show()
+                    val dialogBinding =
+                        DialogRecordedBinding.inflate(LayoutInflater.from(this@MainActivity))
+
+                    val dialog = AlertDialog.Builder(this@MainActivity)
+                        .setView(dialogBinding.root)
+                        .create()
+
+                    dialogBinding.ok.setOnClickListener { dialog.dismiss() }
+                    dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    dialog.window?.setDimAmount(0f)
+                    dialog.show()
+                }
                 SmsManager.RESULT_ERROR_GENERIC_FAILURE -> Log.d(
                     TAG,
                     "$SMS_SENT RESULT_ERROR_GENERIC_FAILURE"
@@ -244,16 +259,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks,
             when (resultCode) {
                 RESULT_OK -> {
                     Log.d(TAG, "$SMS_DELIVERED RESULT_OK")
-                    val dialogBinding = DialogRecordedBinding.inflate(LayoutInflater.from(this@MainActivity))
 
-                    val dialog = AlertDialog.Builder(this@MainActivity)
-                        .setView(dialogBinding.root)
-                        .create()
-
-                    dialogBinding.ok.setOnClickListener { dialog.dismiss() }
-                    dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                    dialog.window?.setDimAmount(0f)
-                    dialog.show()
                 }
                 RESULT_CANCELED -> Log.d(TAG, "$SMS_DELIVERED RESULT_CANCELED")
                 else -> Log.w(TAG, "$SMS_DELIVERED unhandled result=$resultCode")
