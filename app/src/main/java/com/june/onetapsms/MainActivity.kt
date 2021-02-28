@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks,
             val dialogBinding = DialogPersonalInformationBinding.inflate(LayoutInflater.from(this))
 
             val builder = AlertDialog.Builder(this)
-            builder.setView(dialogBinding.root)
+            builder.setView(dialogBinding.root).setCancelable(false)
 
             val alertDialog = builder.create()
             alertDialog.show()
@@ -241,7 +241,13 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks,
     private val smsDeliveredReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (resultCode) {
-                RESULT_OK -> Log.d(TAG, "$SMS_DELIVERED RESULT_OK")
+                RESULT_OK -> {
+                    Log.d(TAG, "$SMS_DELIVERED RESULT_OK")
+                    AlertDialog.Builder(this@MainActivity)
+                        .setTitle(getString(R.string.app_name))
+                        .setMessage("Sales Recorded")
+                        .setPositiveButton("Ok") { dialog, _ -> dialog.dismiss() }.show()
+                }
                 RESULT_CANCELED -> Log.d(TAG, "$SMS_DELIVERED RESULT_CANCELED")
                 else -> Log.w(TAG, "$SMS_DELIVERED unhandled result=$resultCode")
             }
